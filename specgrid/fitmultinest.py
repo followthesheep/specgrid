@@ -220,39 +220,45 @@ class FitMultinest(object):
         # analyze the output data
         a = pymultinest.Analyzer(outputfiles_basename=self.basename, n_params = self.n_params)
         self.analyzer = a
-        s = a.get_stats()
-        self.stats = s   # the statistics on the chain
-        modes = s['modes'][0]   
-        self.mean = modes['mean']
-        self.sigma = modes['sigma']
-        self.evidence = s['global evidence']
-        
-        sigma1 = list()
-        sigma3 = list()
-        marginals = s['marginals']
-        for i in np.arange(self.n_params):
-            sigma1.append(marginals[i]['1sigma'])
-            sigma3.append(marginals[i]['3sigma'])
-        self.sigma1 = sigma1
-        self.sigma3 = sigma3
-        
-        if not(no_plots):
-            plt.figure() 
-            plt.plot(self.spectrum.wavelength.value, self.spectrum.flux.value, color='red', label='data')
-            
-            param_dict = OrderedDict([(key, value) for key, value in zip(self.parameter_names, self.mean)])
-            s2 = self.model.evaluate(**param_dict)
-            # plot the mean of the posteriors for the parameters
-            plt.plot(self.spectrum.wavelength.value, s2.flux.value, '-', color='blue', alpha=0.3, label='data')
-            
-            # for posterior_param in a.get_equal_weighted_posterior()[::100,:-1]:
-            #     param_dict = OrderedDict([(key, value) for key, value in zip(self.parameter_names, posterior_param)])
-            #     s2 = self.model.evaluate(**param_dict)
-            # 	plt.plot(self.spectrum.wavelength.value, s2.flux.value, '-', color='blue', alpha=0.3, label='data')
-            
-            plt.savefig(self.basename + 'posterior.pdf')
-            plt.close()            
-            self.mkplots()
+
+        # check to see if the required file exists before proceeding
+        # (multinest has a limitation where the file name can only be
+        # of a certain length, so the output file name might not be as
+        # expected).
+        if os.path.exists(self.basename+'stats.dat'):
+            s = a.get_stats()
+            self.stats = s   # the statistics on the chain
+            modes = s['modes'][0]   
+            self.mean = modes['mean']
+            self.sigma = modes['sigma']
+            self.evidence = s['global evidence']
+
+            sigma1 = list()
+            sigma3 = list()
+            marginals = s['marginals']
+            for i in np.arange(self.n_params):
+                sigma1.append(marginals[i]['1sigma'])
+                sigma3.append(marginals[i]['3sigma'])
+            self.sigma1 = sigma1
+            self.sigma3 = sigma3
+
+            if not(no_plots):
+                plt.figure() 
+                plt.plot(self.spectrum.wavelength.value, self.spectrum.flux.value, color='red', label='data')
+
+                param_dict = OrderedDict([(key, value) for key, value in zip(self.parameter_names, self.mean)])
+                s2 = self.model.evaluate(**param_dict)
+                # plot the mean of the posteriors for the parameters
+                plt.plot(self.spectrum.wavelength.value, s2.flux.value, '-', color='blue', alpha=0.3, label='data')
+
+                # for posterior_param in a.get_equal_weighted_posterior()[::100,:-1]:
+                #     param_dict = OrderedDict([(key, value) for key, value in zip(self.parameter_names, posterior_param)])
+                #     s2 = self.model.evaluate(**param_dict)
+                # 	plt.plot(self.spectrum.wavelength.value, s2.flux.value, '-', color='blue', alpha=0.3, label='data')
+
+                plt.savefig(self.basename + 'posterior.pdf')
+                plt.close()            
+                self.mkplots()
         
         
     def mkplots(self):
