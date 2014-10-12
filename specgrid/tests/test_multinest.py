@@ -87,11 +87,11 @@ class TestSimpleMultinest(object):
         
         self.fit_multinest.run(seed=741761)
          
-        nptest.assert_almost_equal(self.fit_multinest.mean,[5779.616533128825, 4.135490388533586, 0.04999999999999998])
+        nptest.assert_allclose(self.fit_multinest.mean,[5779.616533128825, 4.135490388533586, 0.04999999999999998],rtol=1e-5)
          
-        nptest.assert_almost_equal(self.fit_multinest.sigma1,
-        [[5779.607572222019, 5779.625214566039], [4.135304645124507, 4.135682928510821], [0.05, 0.05]])
+        nptest.assert_allclose(self.fit_multinest.sigma1,
+                               [[5779.607572222019, 5779.625214566039], [4.135304645124507, 4.135682928510821], [0.05, 0.05]],rtol=1e-5)
          
-        nptest.assert_almost_equal(self.fit_multinest.sigma3, 
-        [[5779.590363406517, 5779.6427247009115], [4.134914605525979, 4.13604688052353], [0.05, 0.05]])
+        nptest.assert_allclose(self.fit_multinest.sigma3, 
+                               [[5779.590363406517, 5779.6427247009115], [4.134914605525979, 4.13604688052353], [0.05, 0.05]],rtol=1e-5)
          
