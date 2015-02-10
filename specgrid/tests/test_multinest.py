@@ -70,7 +70,9 @@ class TestSimpleMultinest(object):
         self.spec_grid = BaseSpectralGrid(data_path('munari_small.h5'))
         self.model_star = ModelStar([self.spec_grid])
         spectrum = self.model_star.evaluate(teff=5780,logg=4.14,feh=0.0)
+
         spectrum.uncertainty = (np.ones(spectrum.flux.shape)+np.sqrt(spectrum.flux.value)) * spectrum.flux.unit
+        
         self.priors=OrderedDict([('teff', fitmultinest.UniformPrior(5000, 6000)), 
             ('logg', fitmultinest.GaussianPrior(4.3,0.3)), 
             ('feh', fitmultinest.FixedPrior(0.05))])
