@@ -243,6 +243,14 @@ class FitMultinest(object):
             self.sigma3 = sigma3
 
             if not(no_plots):
+                # try importing seaborn if it exists:
+                try:
+                    __import__(seaborn)
+                    seaborn.set_style('white')
+                    seaborn.set_context("paper", font_scale=1.5, rc={"lines.linewidth": 1.0})
+                except ImportError:
+                    pass
+
                 plt.figure() 
                 plt.plot(self.spectrum.wavelength.value, self.spectrum.flux.value, color='red', label='data')
 
